@@ -15,4 +15,39 @@
 		<folder>src</folder>
 		<folder>language</folder>
 	</files>
+	<media folder="media" destination="plg_captcha_captchafox">
+		<folder>js</folder>
+	</media>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="sitekey"
+					type="text"
+					label="PLG_CAPTCHA_CAPTCHAFOX_SITEKEY_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_SITEKEY_DESC"
+					filter="trim"
+				/>
+				<field
+					name="secret"
+					type="password"
+					label="PLG_CAPTCHA_CAPTCHAFOX_SECRET_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_SECRET_DESC"
+					autocomplete="off"
+					filter="trim"
+				/>
+				<field
+					name="api_unavailable"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_DESC"
+					default="block"
+					validate="options"
+					>
+					<option value="block">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_BLOCK</option>
+					<option value="allow">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_ALLOW</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
 </extension>

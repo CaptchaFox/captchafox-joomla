@@ -9,3 +9,7 @@
 
 # Build output
 /dist/
+
+# Test cache
+.phpunit.result.cache
+.phpunit.cache/

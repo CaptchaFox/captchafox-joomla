@@ -11,9 +11,12 @@
 namespace CaptchaFox\Plugin\Captcha\CaptchaFox\Extension;
 
 use CaptchaFox\Plugin\Captcha\CaptchaFox\Provider\CaptchaFoxProvider;
+use CaptchaFox\Plugin\Captcha\CaptchaFox\Verification\SiteVerifyClient;
 use Joomla\CMS\Event\Captcha\CaptchaSetupEvent;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\SubscriberInterface;
+use Joomla\Http\HttpFactory;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -24,6 +27,15 @@ use Joomla\Event\SubscriberInterface;
  */
 final class CaptchaFox extends CMSPlugin implements SubscriberInterface
 {
+    /**
+     * @param   array<string, mixed>  $config       Plugin configuration (name, type, params).
+     * @param   HttpFactory           $httpFactory  Creates the client for the siteverify request.
+     */
+    public function __construct(array $config, private HttpFactory $httpFactory)
+    {
+        parent::__construct($config);
+    }
+
     /**
      * @return  array<string, string>
      */
@@ -41,8 +53,65 @@ final class CaptchaFox extends CMSPlugin implements SubscriberInterface
      */
     public function registerProvider(CaptchaSetupEvent $event): void
     {
+        // Loaded here instead of $autoloadLanguage: the plugin only needs its strings when a captcha is used.
+        $this->loadLanguage();
+        $this->addLogger();
+
         $event->getCaptchaRegistry()->add(
-            new CaptchaFoxProvider($this->params, $this->getApplication())
+            new CaptchaFoxProvider(
+                $this->params,
+                $this->getApplication(),
+                new SiteVerifyClient($this->httpFactory, $this->httpOptions())
+            )
         );
+    }
+
+    /**
+     * Writes the plugin's log entries to their own file. Rejected answers are logged at DEBUG level
+     * and only kept when Joomla's debug mode is on, so bot traffic does not fill the log.
+     */
+    private function addLogger(): void
+    {
+        $priorities = (\defined('JDEBUG') && JDEBUG) ? Log::ALL : Log::ALL & ~Log::DEBUG;
+
+        Log::addLogger(
+            ['text_file' => CaptchaFoxProvider::LOG_CATEGORY . '.php'],
+            $priorities,
+            [CaptchaFoxProvider::LOG_CATEGORY]
+        );
+    }
+
+    /**
+     * HTTP client options. The framework client does not read Joomla's global proxy settings by
+     * itself, so they are passed to the curl transport here.
+     *
+     * @return  array<string, mixed>
+     */
+    private function httpOptions(): array
+    {
+        $options = ['userAgent' => 'CaptchaFox-Joomla'];
+        $app     = $this->getApplication();
+
+        if ($app === null || !$app->get('proxy_enable') || !\defined('CURLOPT_PROXY')) {
+            return $options;
+        }
+
+        $host = trim((string) $app->get('proxy_host', ''));
+
+        if ($host === '') {
+            return $options;
+        }
+
+        $port = trim((string) $app->get('proxy_port', ''));
+        $curl = [CURLOPT_PROXY => $port !== '' ? $host . ':' . $port : $host];
+        $user = (string) $app->get('proxy_user', '');
+
+        if ($user !== '') {
+            $curl[CURLOPT_PROXYUSERPWD] = $user . ':' . (string) $app->get('proxy_pass', '');
+        }
+
+        $options['transport.curl'] = $curl;
+
+        return $options;
     }
 }

@@ -17,6 +17,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use Joomla\Http\HttpFactory;
 
 return new class () implements ServiceProviderInterface {
     /**
@@ -43,7 +44,7 @@ return new class () implements ServiceProviderInterface {
                     (array) PluginHelper::getPlugin('captcha', CaptchaFoxProvider::NAME)
                 );
 
-                $plugin = new CaptchaFox($config);
+                $plugin = new CaptchaFox($config, new HttpFactory());
                 $plugin->setApplication(Factory::getApplication());
 
                 return $plugin;

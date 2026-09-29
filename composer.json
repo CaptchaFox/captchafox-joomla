@@ -14,7 +14,13 @@
         "php": ">=8.1"
     },
     "require-dev": {
-        "ext-zip": "*"
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CaptchaFox\\Plugin\\Captcha\\CaptchaFox\\": "plugin/src/",
+            "CaptchaFox\\Plugin\\Captcha\\CaptchaFox\\Tests\\": "tests/"
+        }
     },
     "config": {
         "platform": {
@@ -23,9 +29,11 @@
         "sort-packages": true
     },
     "scripts": {
-        "build": "php build/build.php"
+        "build": "php build/build.php",
+        "test": "phpunit"
     },
     "scripts-descriptions": {
-        "build": "Build the installable plugin ZIP into dist/"
+        "build": "Build the installable plugin ZIP into dist/",
+        "test": "Run the unit tests"
     }
 }
