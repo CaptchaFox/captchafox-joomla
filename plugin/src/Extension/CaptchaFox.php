@@ -13,6 +13,7 @@ namespace CaptchaFox\Plugin\Captcha\CaptchaFox\Extension;
 use CaptchaFox\Plugin\Captcha\CaptchaFox\Provider\CaptchaFoxProvider;
 use CaptchaFox\Plugin\Captcha\CaptchaFox\Verification\SiteVerifyClient;
 use Joomla\CMS\Event\Captcha\CaptchaSetupEvent;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\SubscriberInterface;
@@ -64,6 +65,44 @@ final class CaptchaFox extends CMSPlugin implements SubscriberInterface
                 new SiteVerifyClient($this->httpFactory, $this->httpOptions())
             )
         );
+    }
+
+    /**
+     * Fallback when Joomla does not find the provider.
+     *
+     * If CaptchaFox is still selected as captcha but missing from the captcha registry (plugin
+     * disabled, or its access level excludes the visitor), Joomla boots the plugin anyway and calls
+     * the legacy captcha methods directly on it. Without them Joomla would accept the form unchecked.
+     * With them the form is rejected and a notice is shown where Joomla renders the field.
+     *
+     * Joomla logs a deprecation notice in that case. Joomla 7 removes this legacy path.
+     *
+     * @param   string|null  $name   Input name of the captcha field.
+     * @param   string|null  $id     Id of the captcha field.
+     * @param   string       $class  CSS class of the captcha field.
+     *
+     * @return  string
+     */
+    public function onDisplay($name = null, $id = null, $class = ''): string
+    {
+        // Booted without its plugin record, the plugin has not loaded its language yet.
+        $this->loadLanguage();
+
+        return '<div class="alert alert-warning captchafox-joomla-unavailable">'
+            . Text::_('PLG_CAPTCHA_CAPTCHAFOX_UNAVAILABLE')
+            . '</div>';
+    }
+
+    /**
+     * Fallback when Joomla does not find the provider: always reject (see onDisplay()).
+     *
+     * @param   string|null  $code  The submitted answer (unused).
+     *
+     * @return  bool
+     */
+    public function onCheckAnswer($code = null): bool
+    {
+        return false;
     }
 
     /**
