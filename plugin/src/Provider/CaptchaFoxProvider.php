@@ -10,6 +10,7 @@
 
 namespace CaptchaFox\Plugin\Captcha\CaptchaFox\Provider;
 
+use CaptchaFox\Plugin\Captcha\CaptchaFox\Language\LanguageMapper;
 use CaptchaFox\Plugin\Captcha\CaptchaFox\Verification\SiteVerifyClient;
 use CaptchaFox\Plugin\Captcha\CaptchaFox\Verification\VerificationResult;
 use Joomla\CMS\Application\CMSApplicationInterface;
@@ -55,6 +56,22 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
      */
     private const API_URL = 'https://cdn.captchafox.com/api.js?render=explicit&onload=captchaFoxJoomlaOnLoad';
 
+    /**
+     * Allowed widget options and their defaults (the CaptchaFox defaults).
+     */
+    private const OPTIONS = [
+        'mode'  => ['inline', 'popup', 'hidden'],
+        'theme' => ['light', 'dark'],
+        'start' => ['none', 'focus', 'auto'],
+    ];
+
+    /**
+     * Pages that the notice in hidden mode must link to (required by CaptchaFox).
+     */
+    private const PRIVACY_URL = 'https://captchafox.com/privacy';
+
+    private const TERMS_URL = 'https://captchafox.com/terms';
+
     private const ASSET_INIT = 'plg_captcha_captchafox.init';
 
     private const ASSET_API = 'plg_captcha_captchafox.api';
@@ -97,13 +114,31 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
             'data-sitekey'           => $siteKey,
         ];
 
+        foreach (array_keys(self::OPTIONS) as $option) {
+            $html['data-' . $option] = $this->getOption($option);
+        }
+
+        $language = $this->getWidgetLanguage();
+
+        if ($language !== null) {
+            $html['data-lang'] = $language;
+        }
+
         $id = (string) ($attributes['id'] ?? '');
 
         if ($id !== '') {
             $html['id'] = $id;
         }
 
-        return '<div' . $this->renderAttributes($html) . '></div>';
+        $output = '<div' . $this->renderAttributes($html) . '></div>';
+
+        if ($this->getOption('mode') === 'hidden') {
+            $output .= '<p class="captchafox-joomla-notice small">'
+                . Text::sprintf('PLG_CAPTCHA_CAPTCHAFOX_HIDDEN_NOTICE', self::PRIVACY_URL, self::TERMS_URL)
+                . '</p>';
+        }
+
+        return $output;
     }
 
     /**
@@ -160,13 +195,51 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
         throw new \RuntimeException(Text::_('PLG_CAPTCHA_CAPTCHAFOX_ERROR_UNAVAILABLE'));
     }
 
+    /**
+     * In hidden mode there is no visible widget, so the field label is hidden as well. The label is
+     * read from the element when the field is rendered, after this method has run.
+     */
     public function setupField(FormField $field, \SimpleXMLElement $element): void
     {
+        if ($this->getOption('mode') === 'hidden') {
+            $element['hiddenLabel'] = 'true';
+        }
     }
 
     private function getSiteKey(): string
     {
         return trim((string) $this->params->get('sitekey', ''));
+    }
+
+    /**
+     * A widget option from the plugin settings; unknown values fall back to the CaptchaFox default.
+     */
+    private function getOption(string $name): string
+    {
+        $value = (string) $this->params->get($name, '');
+
+        return \in_array($value, self::OPTIONS[$name], true) ? $value : self::OPTIONS[$name][0];
+    }
+
+    /**
+     * @return  string|null  The widget language, or null to let the widget use the browser language.
+     */
+    private function getWidgetLanguage(): ?string
+    {
+        switch ($this->params->get('language', 'site')) {
+            case 'browser':
+                return null;
+
+            case 'fixed':
+                $code = (string) $this->params->get('language_code', '');
+
+                return LanguageMapper::isSupported($code) ? $code : null;
+
+            default:
+                return $this->application === null
+                    ? null
+                    : LanguageMapper::fromJoomlaTag($this->application->getLanguage()->getTag());
+        }
     }
 
     /**

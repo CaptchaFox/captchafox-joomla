@@ -37,6 +37,83 @@
 					filter="trim"
 				/>
 				<field
+					name="mode"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_MODE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_MODE_DESC"
+					default="inline"
+					validate="options"
+					>
+					<option value="inline">PLG_CAPTCHA_CAPTCHAFOX_MODE_INLINE</option>
+					<option value="popup">PLG_CAPTCHA_CAPTCHAFOX_MODE_POPUP</option>
+					<option value="hidden">PLG_CAPTCHA_CAPTCHAFOX_MODE_HIDDEN</option>
+				</field>
+				<field
+					name="theme"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_THEME_LABEL"
+					default="light"
+					validate="options"
+					>
+					<option value="light">PLG_CAPTCHA_CAPTCHAFOX_THEME_LIGHT</option>
+					<option value="dark">PLG_CAPTCHA_CAPTCHAFOX_THEME_DARK</option>
+				</field>
+				<field
+					name="start"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_START_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_START_DESC"
+					default="none"
+					validate="options"
+					>
+					<option value="none">PLG_CAPTCHA_CAPTCHAFOX_START_NONE</option>
+					<option value="focus">PLG_CAPTCHA_CAPTCHAFOX_START_FOCUS</option>
+					<option value="auto">PLG_CAPTCHA_CAPTCHAFOX_START_AUTO</option>
+				</field>
+				<field
+					name="language"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_DESC"
+					default="site"
+					validate="options"
+					>
+					<option value="site">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_SITE</option>
+					<option value="browser">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_BROWSER</option>
+					<option value="fixed">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_FIXED</option>
+				</field>
+				<field
+					name="language_code"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_CODE_LABEL"
+					default="en"
+					validate="options"
+					showon="language:fixed"
+					>
+					<option value="cs">Čeština (cs)</option>
+					<option value="da">Dansk (da)</option>
+					<option value="de">Deutsch (de)</option>
+					<option value="en">English (en)</option>
+					<option value="es">Español (es)</option>
+					<option value="fi">Suomi (fi)</option>
+					<option value="fr">Français (fr)</option>
+					<option value="ga">Gaeilge (ga)</option>
+					<option value="id">Bahasa Indonesia (id)</option>
+					<option value="it">Italiano (it)</option>
+					<option value="ja">日本語 (ja)</option>
+					<option value="ko">한국어 (ko)</option>
+					<option value="nl">Nederlands (nl)</option>
+					<option value="no">Norsk (no)</option>
+					<option value="pl">Polski (pl)</option>
+					<option value="pt">Português (pt)</option>
+					<option value="ru">Русский (ru)</option>
+					<option value="sv">Svenska (sv)</option>
+					<option value="tr">Türkçe (tr)</option>
+					<option value="uk">Українська (uk)</option>
+					<option value="zh-cn">简体中文 (zh-cn)</option>
+					<option value="zh-tw">繁體中文 (zh-tw)</option>
+				</field>
+				<field
 					name="api_unavailable"
 					type="list"
 					label="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_LABEL"

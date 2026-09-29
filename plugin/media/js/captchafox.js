@@ -44,6 +44,50 @@
     });
   };
 
+  const resubmit = (form, submitter) => {
+    if (typeof form.requestSubmit !== 'function') {
+      form.submit();
+    } else if (submitter && submitter.form === form) {
+      form.requestSubmit(submitter);
+    } else {
+      form.requestSubmit();
+    }
+  };
+
+  // Hidden mode shows no widget: the check runs when the form is submitted, then the form is sent
+  // again with the token. Runs in the bubbling phase, so a submit that Joomla's form validation
+  // already stopped does not start a check.
+  const onSubmit = (event) => {
+    const form = event.target;
+
+    if (event.defaultPrevented || !(form instanceof HTMLFormElement)) {
+      return;
+    }
+
+    const container = form.querySelector(`${SELECTOR}[data-mode="hidden"]`);
+    const token = container && container.querySelector('[name="cf-captcha-response"]');
+
+    if (!container || (token && token.value)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    // Not rendered yet: the visitor can simply submit again.
+    if (!container.dataset.cfWidgetId || !window.captchafox) {
+      return;
+    }
+
+    window.captchafox
+      .execute(container.dataset.cfWidgetId)
+      .then(() => resubmit(form, event.submitter))
+      .catch(() => {
+        // Challenge failed or was closed: the form stays as it is.
+      });
+  };
+
+  document.addEventListener('submit', onSubmit);
+
   // Called by the CaptchaFox API once it is loaded (onload parameter of the script URL).
   window.captchaFoxJoomlaOnLoad = renderAll;
 
