@@ -1,6 +1,7 @@
 # CaptchaFox for Joomla
 
-Official [CaptchaFox](https://captchafox.com) captcha plugin for Joomla.
+Official [CaptchaFox](https://captchafox.com) captcha plugin for Joomla. It protects Joomla's forms
+against bots with CaptchaFox, a privacy-friendly captcha service.
 
 > **Status:** in development, no release yet.
 
@@ -11,7 +12,76 @@ Official [CaptchaFox](https://captchafox.com) captcha plugin for Joomla.
 | 5.4 or later | 8.1 or later |
 | 6.x | 8.3 or later |
 
-Joomla 3, 4, 5.0–5.3 and 7 are not supported.
+Joomla 3, 4, 5.0–5.3 and 7 are not supported. The installer rejects unsupported versions.
+
+## Protected forms
+
+The plugin works through Joomla's captcha interface, so it protects every form that uses Joomla's
+captcha field. In Joomla itself these are:
+
+- contact form
+- user registration
+- "Forgot your username?"
+- "Forgot your password?"
+- article submission in the frontend
+
+Form extensions that bring their own captcha integration (for example form builders) are not covered.
+
+## Installation and setup
+
+1. Download `plg_captcha_captchafox-<version>.zip` from the
+   [releases](https://github.com/CaptchaFox/captchafox-joomla/releases) and install it under
+   **System → Install → Extensions**.
+2. In the CaptchaFox portal, copy the **site key** of your website (Sites) and the **secret key** of
+   your organisation (Organization Settings).
+3. Open **System → Manage → Plugins → Captcha - CaptchaFox**, enter both keys and enable the plugin.
+   Keep its access level at **Public**.
+4. Select CaptchaFox under **System → Global Configuration → Site → Default Captcha**. Components can
+   override this in their options: Contacts ("Allow Captcha on Contact"), Users ("Captcha") and
+   Articles ("Allow Captcha on submit").
+
+## Options
+
+| Option | Values | Default |
+|---|---|---|
+| Site Key | from the CaptchaFox portal | – |
+| Secret Key | from the CaptchaFox portal, only used on the server | – |
+| Mode | Inline, Popup, Hidden | Inline |
+| Theme | Light, Dark | Light |
+| Start | On click, On form focus, Automatically | On click |
+| Language | Language of the site, Language of the browser, Fixed language | Language of the site |
+| If CaptchaFox Is Unreachable | Block the form, Let the form through and log it | Block the form |
+
+- **Language of the site** passes the current Joomla language to the widget. Languages that
+  CaptchaFox does not offer fall back to the browser language.
+- **Hidden** shows no widget. The check runs when the form is submitted, and the plugin shows the
+  notice that CaptchaFox requires in this mode ("This site is protected by CaptchaFox …").
+
+## How it works
+
+- **In the browser:** A form is only sent once the widget has been solved. Otherwise a hint appears
+  at the widget ("Please confirm that you are human."). Cancelling, for example in the article form,
+  is never blocked. In hidden mode the check runs automatically on submit.
+- **On the server:** Every answer is verified with CaptchaFox before Joomla processes the form. The
+  browser check is only a convenience; the server-side verification decides.
+- **If CaptchaFox is unreachable** (network error, timeout of 5 seconds, error response), the option
+  "If CaptchaFox Is Unreachable" decides. Answers that CaptchaFox rejects are always rejected.
+- **Log:** Outages are written to `plg_captcha_captchafox.php` in Joomla's log folder
+  (Global Configuration → Logging → "Path to Log Folder"). Rejected answers are only logged when
+  Joomla's debug mode is on. The secret key is never logged.
+- **Plugin disabled while still selected:** If CaptchaFox is still selected as captcha but the plugin
+  is disabled or its access level is not Public, forms are rejected instead of being accepted without
+  a check, and visitors see "Captcha not available".
+- **Page cache and Content Security Policy:** The widget markup contains no inline script and no
+  session data, so it works with Joomla's page cache and with a nonce-based Content Security Policy.
+  For combining both, see [Troubleshooting](#troubleshooting).
+
+## Privacy
+
+CaptchaFox is operated by Scoria Labs GmbH, Germany. How CaptchaFox processes data and how to get a
+data processing agreement is described in the [CaptchaFox Privacy Center](https://captchafox.com/privacy).
+A suggested paragraph for your privacy policy is on the
+[GDPR page](https://captchafox.com/privacy/gdpr).
 
 ## Content Security Policy
 
@@ -56,6 +126,26 @@ nonce only.
 - Exclude pages with forms from the page cache ("System - Page Cache", options "Exclude Menu Items" or
   "Exclude URLs"), or
 - do not combine the page cache with a nonce-based policy that uses "strict-dynamic".
+
+### "CaptchaFox is not configured yet"
+
+The site key or the secret key is missing. Enter both in the plugin settings.
+
+### "Captcha not available. This form cannot be sent at the moment."
+
+CaptchaFox is selected as captcha, but Joomla cannot use the plugin: it is disabled, or its access
+level is not Public. Enable the plugin and set its access level to Public, or select another captcha.
+
+### "The captcha could not be verified right now"
+
+The server could not reach the CaptchaFox API and the plugin is set to block the form in that case.
+Check that the server can open HTTPS connections to `api.captchafox.com`. If your server needs a proxy,
+set it in Joomla's Global Configuration (Server → "Enable Outbound Proxy"); the plugin uses it. Details are in
+the log file `plg_captcha_captchafox.php`.
+
+### "Please confirm that you are human." although the widget was solved
+
+The confirmation is only valid for a short time. Solve the widget again and send the form.
 
 ### Content Security Policy reports inline styles of the widget
 
