@@ -96,12 +96,18 @@ final class CaptchaFox extends CMSPlugin implements SubscriberInterface
     /**
      * Fallback when Joomla does not find the provider: always reject (see onDisplay()).
      *
+     * Contact, registration and article forms do not render the captcha in this case, so visitors
+     * saw no notice before submitting. The message explains why the form was rejected.
+     *
      * @param   string|null  $code  The submitted answer (unused).
      *
      * @return  bool
      */
     public function onCheckAnswer($code = null): bool
     {
+        $this->loadLanguage();
+        $this->getApplication()?->enqueueMessage(Text::_('PLG_CAPTCHA_CAPTCHAFOX_UNAVAILABLE'), 'error');
+
         return false;
     }
 

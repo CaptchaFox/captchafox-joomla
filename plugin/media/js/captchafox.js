@@ -1,8 +1,9 @@
 /**
  * CaptchaFox for Joomla: renders the CaptchaFox widgets explicitly.
  *
- * Only controls the widget. Validation stays with Joomla: the widget writes its token into the
- * field cf-captcha-response, which the server verifies.
+ * Controls the widget and keeps a form from being sent without a token. Joomla's own form
+ * validation is left untouched, and the server-side verification of the token in the field
+ * cf-captcha-response stays decisive.
  *
  * @copyright  (C) 2026 Scoria Labs GmbH
  * @license    GNU General Public License version 2 or later; see LICENSE
@@ -11,9 +12,44 @@
   'use strict';
 
   const SELECTOR = '[data-captchafox-joomla]';
+  const HINT_CLASS = 'captchafox-joomla-hint';
+
+  const hintOf = (container) => {
+    const next = container.nextElementSibling;
+    return next && next.classList.contains(HINT_CLASS) ? next : null;
+  };
+
+  const clearHint = (container) => {
+    const hint = hintOf(container);
+    if (hint) {
+      hint.remove();
+    }
+  };
+
+  const showHint = (container) => {
+    let hint = hintOf(container);
+
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = `${HINT_CLASS} invalid-feedback d-block`;
+      hint.setAttribute('role', 'alert');
+      container.after(hint);
+    }
+
+    hint.textContent = container.dataset.messageUnsolved || '';
+    container.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+    const checkbox = container.querySelector('[role="checkbox"]');
+    if (checkbox) {
+      checkbox.focus({ preventScroll: true });
+    }
+  };
 
   const optionsFor = (container) => {
-    const options = { sitekey: container.dataset.sitekey };
+    const options = {
+      sitekey: container.dataset.sitekey,
+      onVerify: () => clearHint(container),
+    };
 
     ['mode', 'theme', 'start', 'lang'].forEach((name) => {
       if (container.dataset[name]) {
@@ -54,17 +90,28 @@
     }
   };
 
-  // Hidden mode shows no widget: the check runs when the form is submitted, then the form is sent
-  // again with the token. Runs in the bubbling phase, so a submit that Joomla's form validation
-  // already stopped does not start a check.
+  // Cancelling (e.g. the article form's Cancel, task "article.cancel") must never need a captcha.
+  const isCancel = (form, submitter) => {
+    if (submitter && submitter.formNoValidate) {
+      return true;
+    }
+
+    const task = form.elements.namedItem('task');
+
+    return !!task && typeof task.value === 'string' && /\.cancel$/.test(task.value);
+  };
+
+  // A form is only sent with a token. Hidden mode shows no widget: the check runs on submit, then the
+  // form is sent again with the token. In the other modes the visitor gets a hint at the widget.
+  // Runs in the bubbling phase, so a submit that Joomla's form validation already stopped is left alone.
   const onSubmit = (event) => {
     const form = event.target;
 
-    if (event.defaultPrevented || !(form instanceof HTMLFormElement)) {
+    if (event.defaultPrevented || !(form instanceof HTMLFormElement) || isCancel(form, event.submitter)) {
       return;
     }
 
-    const container = form.querySelector(`${SELECTOR}[data-mode="hidden"]`);
+    const container = form.querySelector(SELECTOR);
     const token = container && container.querySelector('[name="cf-captcha-response"]');
 
     if (!container || (token && token.value)) {
@@ -72,6 +119,12 @@
     }
 
     event.preventDefault();
+
+    if (container.dataset.mode !== 'hidden') {
+      showHint(container);
+
+      return;
+    }
 
     // Not rendered yet: the visitor can simply submit again.
     if (!container.dataset.cfWidgetId || !window.captchafox) {

@@ -112,6 +112,7 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
             'class'                  => 'captchafox-joomla',
             'data-captchafox-joomla' => '',
             'data-sitekey'           => $siteKey,
+            'data-message-unsolved'  => Text::_('PLG_CAPTCHA_CAPTCHAFOX_UNSOLVED'),
         ];
 
         foreach (array_keys(self::OPTIONS) as $option) {
