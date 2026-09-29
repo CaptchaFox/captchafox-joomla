@@ -80,6 +80,16 @@ Without a local PHP installation, the build can run in the official Composer ima
 docker run --rm -v "$PWD":/app -w /app composer:2 composer build
 ```
 
+Quality checks (after `composer install`):
+
+| Command | Checks |
+|---|---|
+| `composer test` | Unit tests (PHPUnit) |
+| `composer cs` | Code style, the rules of the Joomla core (`composer cs-fix` fixes it) |
+| `build/phpstan.sh` | Static analysis (PHPStan level 8, PHP 8.1) against Joomla 5.4 and 6, using the Joomla source in the official Docker images |
+
+The code must stay compatible with PHP 8.1.
+
 ## License
 
 Copyright (C) 2026 Scoria Labs GmbH. Licensed under the GNU General Public License version 2 or

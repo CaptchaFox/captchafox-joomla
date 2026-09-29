@@ -15,12 +15,12 @@ declare(strict_types=1);
 const PACKAGE_NAME = 'plg_captcha_captchafox';
 const FIXED_MTIME  = 1735689600; // 2025-01-01T00:00:00Z
 
-$root      = dirname(__DIR__);
+$root      = \dirname(__DIR__);
 $pluginDir = $root . '/plugin';
 $distDir   = $root . '/dist';
 $manifest  = $pluginDir . '/captchafox.xml';
 
-if (!extension_loaded('zip')) {
+if (!\extension_loaded('zip')) {
     fwrite(STDERR, "The PHP zip extension is required.\n");
     exit(1);
 }
@@ -33,7 +33,7 @@ if ($xml === false || trim((string) $xml->version) === '') {
 }
 
 $version = trim((string) $xml->version);
-$target  = sprintf('%s/%s-%s.zip', $distDir, PACKAGE_NAME, $version);
+$target  = \sprintf('%s/%s-%s.zip', $distDir, PACKAGE_NAME, $version);
 
 if (!is_dir($distDir) && !mkdir($distDir, 0775, true)) {
     fwrite(STDERR, "Could not create $distDir.\n");
@@ -52,7 +52,7 @@ $iterator = new RecursiveIteratorIterator(
 foreach ($iterator as $file) {
     /** @var SplFileInfo $file */
     if ($file->isFile() && $file->getFilename() !== '.DS_Store') {
-        $files[] = substr($file->getPathname(), strlen($pluginDir) + 1);
+        $files[] = substr($file->getPathname(), \strlen($pluginDir) + 1);
     }
 }
 
@@ -72,4 +72,4 @@ foreach ($files as $relative) {
 
 $zip->close();
 
-printf("Built %s (%d files)\n", substr($target, strlen($root) + 1), count($files));
+printf("Built %s (%d files)\n", substr($target, \strlen($root) + 1), \count($files));

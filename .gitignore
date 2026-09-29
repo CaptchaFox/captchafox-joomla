@@ -13,3 +13,6 @@
 # Test cache
 .phpunit.result.cache
 .phpunit.cache/
+
+# Tool caches
+.php-cs-fixer.cache

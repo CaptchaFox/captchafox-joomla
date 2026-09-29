@@ -184,7 +184,7 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
         $allow = $this->params->get('api_unavailable', 'block') === 'allow';
 
         Log::add(
-            sprintf('CaptchaFox API unavailable (%s), form %s.', $result->reason, $allow ? 'let through' : 'blocked'),
+            \sprintf('CaptchaFox API unavailable (%s), form %s.', $result->reason, $allow ? 'let through' : 'blocked'),
             Log::WARNING,
             self::LOG_CATEGORY
         );

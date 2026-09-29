@@ -89,15 +89,15 @@ final class VerificationResultTest extends TestCase
     public static function unavailableResponses(): array
     {
         return [
-            'redirect'          => [301, '', 'HTTP status 301'],
-            'server error'      => [500, '{"success":true}', 'HTTP status 500'],
-            'rate limited'      => [429, '', 'HTTP status 429'],
-            'no status'         => [0, '', 'HTTP status 0'],
-            'not JSON'          => [200, '<html>maintenance</html>', 'not valid JSON'],
-            'empty body'        => [200, '', 'not valid JSON'],
-            'JSON array'        => [200, '[true]', 'no "success" field'],
-            'JSON scalar'       => [200, 'true', 'no "success" field'],
-            'no success field'  => [200, '{"error-codes":[]}', 'no "success" field'],
+            'redirect'         => [301, '', 'HTTP status 301'],
+            'server error'     => [500, '{"success":true}', 'HTTP status 500'],
+            'rate limited'     => [429, '', 'HTTP status 429'],
+            'no status'        => [0, '', 'HTTP status 0'],
+            'not JSON'         => [200, '<html>maintenance</html>', 'not valid JSON'],
+            'empty body'       => [200, '', 'not valid JSON'],
+            'JSON array'       => [200, '[true]', 'no "success" field'],
+            'JSON scalar'      => [200, 'true', 'no "success" field'],
+            'no success field' => [200, '{"error-codes":[]}', 'no "success" field'],
         ];
     }
 
