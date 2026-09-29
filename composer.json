@@ -1,0 +1,31 @@
+{
+    "name": "captchafox/joomla",
+    "description": "CaptchaFox captcha plugin for Joomla",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Scoria Labs GmbH",
+            "homepage": "https://captchafox.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "ext-zip": "*"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "build": "php build/build.php"
+    },
+    "scripts-descriptions": {
+        "build": "Build the installable plugin ZIP into dist/"
+    }
+}

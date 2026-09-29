@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="captcha" method="upgrade">
+	<name>plg_captcha_captchafox</name>
+	<author>Scoria Labs GmbH</author>
+	<authorUrl>https://captchafox.com</authorUrl>
+	<creationDate>2026-09</creationDate>
+	<copyright>(C) 2026 Scoria Labs GmbH</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE</license>
+	<version>0.1.0</version>
+	<description>PLG_CAPTCHA_CAPTCHAFOX_XML_DESCRIPTION</description>
+	<namespace path="src">CaptchaFox\Plugin\Captcha\CaptchaFox</namespace>
+	<scriptfile>script.php</scriptfile>
+	<files>
+		<folder plugin="captchafox">services</folder>
+		<folder>src</folder>
+		<folder>language</folder>
+	</files>
+</extension>
