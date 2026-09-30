@@ -64,5 +64,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add updates/updates.xml
-          git commit -m "Update server: add version ${VERSION}"
+          git commit -m "chore(release): add ${VERSION} to the update server"
           git push origin main
