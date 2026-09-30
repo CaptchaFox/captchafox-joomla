@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Changelog of CaptchaFox for Joomla, shown in the Joomla administrator. Add an entry for every
+  version before tagging it; the release workflow refuses a tag without an entry.
+-->
+<changelogs>
+    <changelog>
+        <element>captchafox</element>
+        <type>plugin</type>
+        <version>1.0.0</version>
+        <addition>
+            <item>CaptchaFox as captcha for Joomla 5.4 and Joomla 6</item>
+            <item>Protects the contact form, user registration, "Forgot your username?", "Forgot your password?" and article submission</item>
+            <item>Options for mode (inline, popup, hidden), theme, start and language</item>
+            <item>Server-side verification with a setting for when CaptchaFox is unreachable</item>
+        </addition>
+    </changelog>
+</changelogs>

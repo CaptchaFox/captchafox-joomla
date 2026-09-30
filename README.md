@@ -7,8 +7,6 @@ against bots with CaptchaFox, a privacy-friendly captcha service.
   <img src="docs/preview.png" alt="CaptchaFox widget in the password reset form of Joomla 6" width="720">
 </p>
 
-> **Status:** in development, no release yet.
-
 ## Compatibility
 
 | Joomla | PHP |

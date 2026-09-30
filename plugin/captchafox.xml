@@ -6,10 +6,14 @@
 	<creationDate>2026-09</creationDate>
 	<copyright>(C) 2026 Scoria Labs GmbH</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE</license>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 	<description>PLG_CAPTCHA_CAPTCHAFOX_XML_DESCRIPTION</description>
 	<namespace path="src">CaptchaFox\Plugin\Captcha\CaptchaFox</namespace>
 	<scriptfile>script.php</scriptfile>
+	<changelogurl>https://raw.githubusercontent.com/CaptchaFox/captchafox-joomla/main/updates/changelog.xml</changelogurl>
+	<updateservers>
+		<server type="extension" name="CaptchaFox for Joomla">https://raw.githubusercontent.com/CaptchaFox/captchafox-joomla/main/updates/updates.xml</server>
+	</updateservers>
 	<files>
 		<folder plugin="captchafox">services</folder>
 		<folder>src</folder>
