@@ -1,6 +1,7 @@
 name: Release
 
-# Runs when a version tag is pushed. Tag only a commit that passed the end-to-end tests.
+# Runs when a version tag is pushed. Tag only a commit on main that passed the end-to-end tests;
+# tags on any other commit are refused before anything is published.
 on:
   push:
     tags: ['v[0-9]+.[0-9]+.[0-9]+']
@@ -16,6 +17,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history, so that the check below can see whether the tag is on main.
+          fetch-depth: 0
+
+      - name: Check that the tag points to a commit on main
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::${GITHUB_REF_NAME} points to $(git rev-parse --short HEAD), which is not on main. Tag the tested commit on main."
+            exit 1
+          fi
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
@@ -58,7 +69,7 @@ jobs:
 
       - name: Add the version to the update server on main
         run: |
-          git fetch --depth=1 origin main
+          git fetch origin main
           git checkout -B main origin/main
           php build/add-update.php "$VERSION" "$SHA256"
           git config user.name 'github-actions[bot]'

@@ -104,9 +104,9 @@ minimum or removed options → major.
 
 1. On `main`: the version in `plugin/captchafox.xml` and a matching entry in `updates/changelog.xml`.
 2. The end-to-end tests pass on exactly that commit.
-3. Tag `vX.Y.Z` on that commit and push the tag. The release workflow checks version and changelog,
-   builds the ZIP, creates the GitHub release with the ZIP and adds the entry to
-   `updates/updates.xml` on `main` (`build/add-update.php`).
+3. Tag `vX.Y.Z` on that commit and push the tag. The release workflow refuses tags on commits that
+   are not on `main`, checks version and changelog, builds the ZIP, creates the GitHub release with
+   the ZIP and adds the entry to `updates/updates.xml` on `main` (`build/add-update.php`).
 
 Joomla 5.4.9 and 6.1.4 and later show a security level for update entries that carry a
 `<security>` element (0 to 4). `build/add-update.php` does not set it yet; add it before the first
