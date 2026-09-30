@@ -29,16 +29,61 @@ Form extensions that bring their own captcha integration (for example form build
 
 ## Installation and setup
 
-1. Download `plg_captcha_captchafox-<version>.zip` from the
-   [releases](https://github.com/CaptchaFox/captchafox-joomla/releases) and install it under
-   **System → Install → Extensions**.
-2. In the CaptchaFox portal, copy the **site key** of your website (Sites) and the **secret key** of
-   your organisation (Organization Settings).
-3. Open **System → Manage → Plugins → Captcha - CaptchaFox**, enter both keys and enable the plugin.
-   Keep its access level at **Public**.
-4. Select CaptchaFox under **System → Global Configuration → Site → Default Captcha**. Components can
-   override this in their options: Contacts ("Allow Captcha on Contact"), Users ("Captcha") and
-   Articles ("Allow Captcha on submit").
+### 1. Install the plugin
+
+Download `plg_captcha_captchafox-<version>.zip` from the
+[releases](https://github.com/CaptchaFox/captchafox-joomla/releases). In the Joomla administrator, go
+to **System → Install → Extensions** and upload the ZIP.
+
+### 2. Get your keys
+
+In the CaptchaFox portal, copy the **site key** of your website (Sites) and the **secret key** of your
+organisation (Organization Settings).
+
+### 3. Configure and enable the plugin
+
+Go to **System → Manage → Plugins**, search for "CaptchaFox" and open **Captcha - CaptchaFox**:
+
+1. Enter the **Site Key** and the **Secret Key**.
+2. Set **Status** to **Enabled**.
+3. Keep **Access** at **Public**. With any other access level, Joomla cannot use the plugin for
+   visitors and rejects their forms (see [Troubleshooting](#troubleshooting)).
+4. Click **Save & Close**.
+
+### 4. Choose where CaptchaFox is used
+
+CaptchaFox has no switch per form. Joomla decides which captcha a form uses, on two levels.
+
+**Site-wide:** Go to **System → Global Configuration**, tab **Site**, set **Default Captcha** to
+"Captcha - CaptchaFox" and save. From then on, all [protected forms](#protected-forms) show CaptchaFox,
+as long as the components below keep their default "Use Global".
+
+**Per component (optional):** A component can use a different captcha or none. Open the component,
+click **Options** in the toolbar (top right) and change the option:
+
+| Component | Tab | Option | Applies to |
+|---|---|---|---|
+| Components → Contacts | Form | Allow Captcha on Contact | all contact forms |
+| Users → Manage | User Options | Captcha | registration, "Forgot your username?" and "Forgot your password?" together |
+| Content → Articles | Editing Layout | Allow Captcha on submit | article submission in the frontend |
+
+Each of these options offers:
+
+- **Use Global:** the Default Captcha from the Global Configuration (the default)
+- **None:** no captcha for this component
+- a specific captcha plugin, for example "Captcha - CaptchaFox"
+
+Example: Default Captcha "Captcha - CaptchaFox" and Contacts "None" means that every protected form
+except the contact forms uses CaptchaFox.
+
+Good to know:
+
+- A single contact or menu item cannot switch the captcha on or off. All contact forms behave the same.
+- Joomla's login form has no captcha.
+- A form only appears if its feature is on. Registration, for example, needs **Allow User
+  Registration** (Users → Manage → Options → User Options).
+- The captcha is also shown to logged-in users.
+- Forms of other extensions that use Joomla's captcha field show CaptchaFox automatically.
 
 ## Options
 
