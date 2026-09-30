@@ -225,7 +225,8 @@ Quality checks (after `composer install`):
 | `composer cs` | Code style, the rules of the Joomla core (`composer cs-fix` fixes it) |
 | `build/phpstan.sh` | Static analysis (PHPStan level 8, PHP 8.1) against Joomla 5.4 and 6, using the Joomla source in the official Docker images |
 
-The code must stay compatible with PHP 8.1.
+The code must stay compatible with PHP 8.1. Repository layout, coding rules, tests and the release
+process are described in [AGENTS.md](AGENTS.md).
 
 ## License
 
