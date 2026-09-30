@@ -3,6 +3,10 @@
 Official [CaptchaFox](https://captchafox.com) captcha plugin for Joomla. It protects Joomla's forms
 against bots with CaptchaFox, a privacy-friendly captcha service.
 
+<p align="center">
+  <img src="docs/preview.png" alt="CaptchaFox widget in the password reset form of Joomla 6" width="720">
+</p>
+
 > **Status:** in development, no release yet.
 
 ## Compatibility
