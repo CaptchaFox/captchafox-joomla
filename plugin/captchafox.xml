@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="captcha" method="upgrade">
+	<name>plg_captcha_captchafox</name>
+	<author>Scoria Labs GmbH</author>
+	<authorUrl>https://captchafox.com</authorUrl>
+	<creationDate>2026-09</creationDate>
+	<copyright>(C) 2026 Scoria Labs GmbH</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE</license>
+	<version>1.0.0</version>
+	<description>PLG_CAPTCHA_CAPTCHAFOX_XML_DESCRIPTION</description>
+	<namespace path="src">CaptchaFox\Plugin\Captcha\CaptchaFox</namespace>
+	<scriptfile>script.php</scriptfile>
+	<changelogurl>https://raw.githubusercontent.com/CaptchaFox/captchafox-joomla/main/updates/changelog.xml</changelogurl>
+	<updateservers>
+		<server type="extension" name="CaptchaFox for Joomla">https://raw.githubusercontent.com/CaptchaFox/captchafox-joomla/main/updates/updates.xml</server>
+	</updateservers>
+	<files>
+		<folder plugin="captchafox">services</folder>
+		<folder>src</folder>
+		<folder>language</folder>
+	</files>
+	<media folder="media" destination="plg_captcha_captchafox">
+		<folder>js</folder>
+	</media>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="sitekey"
+					type="text"
+					label="PLG_CAPTCHA_CAPTCHAFOX_SITEKEY_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_SITEKEY_DESC"
+					filter="trim"
+				/>
+				<field
+					name="secret"
+					type="password"
+					label="PLG_CAPTCHA_CAPTCHAFOX_SECRET_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_SECRET_DESC"
+					autocomplete="off"
+					filter="trim"
+				/>
+				<field
+					name="mode"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_MODE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_MODE_DESC"
+					default="inline"
+					validate="options"
+					>
+					<option value="inline">PLG_CAPTCHA_CAPTCHAFOX_MODE_INLINE</option>
+					<option value="popup">PLG_CAPTCHA_CAPTCHAFOX_MODE_POPUP</option>
+					<option value="hidden">PLG_CAPTCHA_CAPTCHAFOX_MODE_HIDDEN</option>
+				</field>
+				<field
+					name="theme"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_THEME_LABEL"
+					default="light"
+					validate="options"
+					>
+					<option value="light">PLG_CAPTCHA_CAPTCHAFOX_THEME_LIGHT</option>
+					<option value="dark">PLG_CAPTCHA_CAPTCHAFOX_THEME_DARK</option>
+				</field>
+				<field
+					name="start"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_START_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_START_DESC"
+					default="none"
+					validate="options"
+					>
+					<option value="none">PLG_CAPTCHA_CAPTCHAFOX_START_NONE</option>
+					<option value="focus">PLG_CAPTCHA_CAPTCHAFOX_START_FOCUS</option>
+					<option value="auto">PLG_CAPTCHA_CAPTCHAFOX_START_AUTO</option>
+				</field>
+				<field
+					name="language"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_DESC"
+					default="site"
+					validate="options"
+					>
+					<option value="site">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_SITE</option>
+					<option value="browser">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_BROWSER</option>
+					<option value="fixed">PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_FIXED</option>
+				</field>
+				<field
+					name="language_code"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_LANGUAGE_CODE_LABEL"
+					default="en"
+					validate="options"
+					showon="language:fixed"
+					>
+					<option value="cs">Čeština (cs)</option>
+					<option value="da">Dansk (da)</option>
+					<option value="de">Deutsch (de)</option>
+					<option value="en">English (en)</option>
+					<option value="es">Español (es)</option>
+					<option value="fi">Suomi (fi)</option>
+					<option value="fr">Français (fr)</option>
+					<option value="ga">Gaeilge (ga)</option>
+					<option value="id">Bahasa Indonesia (id)</option>
+					<option value="it">Italiano (it)</option>
+					<option value="ja">日本語 (ja)</option>
+					<option value="ko">한국어 (ko)</option>
+					<option value="nl">Nederlands (nl)</option>
+					<option value="no">Norsk (no)</option>
+					<option value="pl">Polski (pl)</option>
+					<option value="pt">Português (pt)</option>
+					<option value="ru">Русский (ru)</option>
+					<option value="sv">Svenska (sv)</option>
+					<option value="tr">Türkçe (tr)</option>
+					<option value="uk">Українська (uk)</option>
+					<option value="zh-cn">简体中文 (zh-cn)</option>
+					<option value="zh-tw">繁體中文 (zh-tw)</option>
+				</field>
+				<field
+					name="api_unavailable"
+					type="list"
+					label="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_LABEL"
+					description="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_DESC"
+					default="allow"
+					validate="options"
+					>
+					<option value="allow">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_ALLOW</option>
+					<option value="block">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_BLOCK</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

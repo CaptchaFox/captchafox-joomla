@@ -1,0 +1,18 @@
+# Static analysis. Needs the Joomla classes: JOOMLA_ROOT must point to a Joomla 5.4 or 6.x
+# installation or source tree. build/phpstan.sh runs it against both inside the official images.
+parameters:
+    # Level 8: stricter levels only add reports about "mixed" values from Joomla's untyped
+    # configuration APIs (Registry::get(), CMSApplication::get()).
+    level: 8
+    phpVersion: 80100
+    paths:
+        - plugin
+        - build
+        - tests
+    bootstrapFiles:
+        - build/phpstan-bootstrap.php
+    # Values that depend on the Joomla installation at runtime, not on the one analysed.
+    dynamicConstantNames:
+        - JDEBUG
+        - JVERSION
+        - Joomla\CMS\Version::MAJOR_VERSION

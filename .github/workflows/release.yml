@@ -1,0 +1,79 @@
+name: Release
+
+# Runs when a version tag is pushed. Tag only a commit on main that passed the end-to-end tests;
+# tags on any other commit are refused before anything is published.
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    name: Release ${{ github.ref_name }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history, so that the check below can see whether the tag is on main.
+          fetch-depth: 0
+
+      - name: Check that the tag points to a commit on main
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::${GITHUB_REF_NAME} points to $(git rev-parse --short HEAD), which is not on main. Tag the tested commit on main."
+            exit 1
+          fi
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.1'
+          extensions: zip
+          coverage: none
+
+      - name: Check the version in the manifest and the changelog
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          manifest="$(sed -n 's:.*<version>\(.*\)</version>.*:\1:p' plugin/captchafox.xml | head -1)"
+          if [ "$manifest" != "$version" ]; then
+            echo "::error::The manifest has version ${manifest}, the tag is ${GITHUB_REF_NAME}."
+            exit 1
+          fi
+          if ! grep -q "<version>${version}</version>" updates/changelog.xml; then
+            echo "::error::updates/changelog.xml has no entry for ${version}."
+            exit 1
+          fi
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
+
+      - name: Build the installable package
+        run: |
+          php build/build.php
+          echo "PACKAGE=dist/plg_captcha_captchafox-${VERSION}.zip" >> "$GITHUB_ENV"
+
+      - name: Checksum
+        run: echo "SHA256=$(sha256sum "$PACKAGE" | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$PACKAGE" \
+            --verify-tag \
+            --title "CaptchaFox for Joomla ${VERSION}" \
+            --notes "Install \`$(basename "$PACKAGE")\` under System → Install → Extensions. Joomla sites with an older version get it as an update.
+
+          SHA-256: \`${SHA256}\`"
+
+      - name: Add the version to the update server on main
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          php build/add-update.php "$VERSION" "$SHA256"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add updates/updates.xml
+          git commit -m "chore(release): add ${VERSION} to the update server"
+          git push origin main

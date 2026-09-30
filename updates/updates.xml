@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Update server of CaptchaFox for Joomla. Joomla sites read this file from the main branch.
+  Its URL is fixed in the plugin manifest: never move or rename it. The release workflow adds an
+  entry for every version (build/add-update.php).
+-->
+<updates>
+</updates>

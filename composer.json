@@ -1,0 +1,47 @@
+{
+    "name": "captchafox/joomla",
+    "description": "CaptchaFox captcha plugin for Joomla",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Scoria Labs GmbH",
+            "homepage": "https://captchafox.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CaptchaFox\\Plugin\\Captcha\\CaptchaFox\\": "plugin/src/",
+            "CaptchaFox\\Plugin\\Captcha\\CaptchaFox\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "build": "php build/build.php",
+        "test": "phpunit",
+        "analyse": "phpstan analyse",
+        "cs": "php-cs-fixer check --diff",
+        "cs-fix": "php-cs-fixer fix"
+    },
+    "scripts-descriptions": {
+        "build": "Build the installable plugin ZIP into dist/",
+        "test": "Run the unit tests",
+        "analyse": "Static analysis (needs JOOMLA_ROOT, see build/phpstan.sh)",
+        "cs": "Check the code style",
+        "cs-fix": "Fix the code style"
+    }
+}
