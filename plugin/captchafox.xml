@@ -122,11 +122,11 @@
 					type="list"
 					label="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_LABEL"
 					description="PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_DESC"
-					default="block"
+					default="allow"
 					validate="options"
 					>
-					<option value="block">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_BLOCK</option>
 					<option value="allow">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_ALLOW</option>
+					<option value="block">PLG_CAPTCHA_CAPTCHAFOX_API_UNAVAILABLE_BLOCK</option>
 				</field>
 			</fieldset>
 		</fields>

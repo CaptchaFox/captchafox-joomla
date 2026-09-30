@@ -97,7 +97,7 @@ Good to know:
 | Theme | Light, Dark | Light |
 | Start | On click, On form focus, Automatically | On click |
 | Language | Language of the site, Language of the browser, Fixed language | Language of the site |
-| If CaptchaFox Is Unreachable | Block the form, Let the form through and log it | Block the form |
+| If CaptchaFox Is Unreachable | Let the form through and log it, Block the form | Let the form through and log it |
 
 - **Language of the site** passes the current Joomla language to the widget. Languages that
   CaptchaFox does not offer fall back to the browser language.
@@ -112,7 +112,10 @@ Good to know:
 - **On the server:** Every answer is verified with CaptchaFox before Joomla processes the form. The
   browser check is only a convenience; the server-side verification decides.
 - **If CaptchaFox is unreachable** (network error, timeout of 5 seconds, error response), the option
-  "If CaptchaFox Is Unreachable" decides. Answers that CaptchaFox rejects are always rejected.
+  "If CaptchaFox Is Unreachable" decides. By default the form is let through and the outage is
+  logged, so an outage at CaptchaFox does not lock visitors out of your forms. Choose "Block the form"
+  if protection matters more to you than availability. Answers that CaptchaFox rejects are always
+  rejected.
 - **Log:** Outages are written to `plg_captcha_captchafox.php` in Joomla's log folder
   (Global Configuration → Logging → "Path to Log Folder"). Rejected answers are only logged when
   Joomla's debug mode is on. The secret key is never logged.
@@ -185,7 +188,8 @@ level is not Public. Enable the plugin and set its access level to Public, or se
 
 ### "The captcha could not be verified right now"
 
-The server could not reach the CaptchaFox API and the plugin is set to block the form in that case.
+The server could not reach the CaptchaFox API, and the option "If CaptchaFox Is Unreachable" is set to
+"Block the form" (the default lets the form through).
 Check that the server can open HTTPS connections to `api.captchafox.com`. If your server needs a proxy,
 set it in Joomla's Global Configuration (Server → "Enable Outbound Proxy"); the plugin uses it. Details are in
 the log file `plg_captcha_captchafox.php`.

@@ -181,7 +181,9 @@ final class CaptchaFoxProvider implements CaptchaProviderInterface
             return false;
         }
 
-        $allow = $this->params->get('api_unavailable', 'block') === 'allow';
+        // An outage at CaptchaFox must not lock visitors out of the site's forms, so only an explicit
+        // "block" setting rejects the form; the outage is logged either way.
+        $allow = $this->params->get('api_unavailable', 'allow') !== 'block';
 
         Log::add(
             \sprintf('CaptchaFox API unavailable (%s), form %s.', $result->reason, $allow ? 'let through' : 'blocked'),

@@ -44,8 +44,9 @@ docs/                            images for the README, not part of the ZIP
 - **Token:** taken from the captcha field value if a form passes one, otherwise from the POST field
   `cf-captcha-response`.
 - **Verification:** only `"success": true` from `/siteverify` passes. If the API cannot be reached
-  (network error, timeout, HTTP status >= 300, no valid JSON), the setting `api_unavailable` decides;
-  the default blocks. Timeout 5 s, no retry, Joomla's proxy settings apply.
+  (network error, timeout, HTTP status >= 300, no valid JSON), the setting `api_unavailable` decides.
+  The default lets the form through and logs the outage, so an outage at CaptchaFox does not lock
+  visitors out; `block` rejects the form instead. Timeout 5 s, no retry, Joomla's proxy settings apply.
 - **Widget:** rendered explicitly by `media/js/captchafox.js`. The container markup is static, without
   inline script or session data, so pages work with Joomla's page cache and CSP nonces.
 - **Browser lock:** in inline and popup mode an unsolved form is not sent, and a hint appears at the
