@@ -206,31 +206,54 @@ Without `'unsafe-inline'` in `style-src`, the browser may report blocked inline 
 ## Development
 
 The installable package is built from `plugin/`, which contains exactly the files that end up in
-the ZIP. Requirements: PHP 8.1+ with the `zip` extension and Composer.
+the ZIP:
 
-```bash
-composer build
+```
+plugin/                          everything in the installable ZIP, and nothing else
+├── captchafox.xml               manifest: version, parameters, update server and changelog URLs
+├── script.php                   installer checks: PHP >= 8.1, Joomla >= 5.4.0, Joomla major < 7
+├── services/provider.php        service provider, creates the plugin
+├── src/Extension/CaptchaFox.php registers the captcha provider (onCaptchaSetup), legacy fallback
+├── src/Provider/                widget markup, assets, answer check (CaptchaProviderInterface)
+├── src/Verification/            /siteverify client and classification of its responses
+├── src/Language/                Joomla language tag -> CaptchaFox language code
+├── media/js/captchafox.js       explicit widget rendering and submit handling
+└── language/{en-GB,de-DE}/      language files
+tests/                           PHPUnit tests
+build/                           build.php (ZIP), add-update.php (update server entry), phpstan.sh
+updates/                         updates.xml (update server) and changelog.xml, read by Joomla sites
+docs/                            images for this README, not part of the ZIP
+.github/                         CI, release workflow, Dependabot
 ```
 
-This writes `dist/plg_captcha_captchafox-<version>.zip`. The version is taken from
-`plugin/captchafox.xml`.
-
-Without a local PHP installation, the build can run in the official Composer image:
+Requirements: PHP 8.1+ with the `zip` extension and Composer, or only Docker:
 
 ```bash
+docker run --rm -v "$PWD":/app -w /app composer:2 composer install
 docker run --rm -v "$PWD":/app -w /app composer:2 composer build
 ```
 
-Quality checks (after `composer install`):
+`composer build` writes `dist/plg_captcha_captchafox-<version>.zip`, reproducibly. The version is
+taken from `plugin/captchafox.xml`.
 
 | Command | Checks |
 |---|---|
 | `composer test` | Unit tests (PHPUnit) |
 | `composer cs` | Code style, the rules of the Joomla core (`composer cs-fix` fixes it) |
-| `build/phpstan.sh` | Static analysis (PHPStan level 8, PHP 8.1) against Joomla 5.4 and 6, using the Joomla source in the official Docker images |
+| `build/phpstan.sh` | Static analysis (PHPStan level 8, PHP 8.1) against Joomla 5.4 and 6, using the Joomla source in the official Docker images (`docker pull` them first to analyse against the newest patch release) |
 
-The code must stay compatible with PHP 8.1. Repository layout, coding rules, tests and the release
-process are described in [AGENTS.md](AGENTS.md).
+Code rules:
+
+- The code runs on PHP 8.1 and on Joomla 5.4 and 6; PHPStan checks both.
+- Code, comments and this README are in English. Every user-facing text is a language string in
+  `en-GB` and `de-DE`.
+- Comments explain the reason for a decision as a plain statement.
+- Only `plugin/` ends up in the ZIP; build and development files stay outside of it.
+
+Unit tests cover the classification of `/siteverify` responses and the language mapping; CI runs them
+for every push to `main` and every pull request and builds the package. End-to-end tests against real
+Joomla 5.4 and 6 installations run before every release. A pull request that changes behaviour should
+describe how to reproduce it in a Joomla site.
 
 ## License
 
